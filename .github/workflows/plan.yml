@@ -175,24 +175,30 @@ jobs:
         run: |
           kind load docker-image numeric-app:local --name xpertgroup-cluster
 
-      - name: Deploy application
+          - name: Deploy application
+          run: |
+            kubectl create deployment numeric --image=numeric-app:local || echo "Deployment already exists"
+            kubectl expose deployment numeric --port=8080 --type=ClusterIP || echo "Service already exists"
+        
+      - name: Load image into kind
         run: |
-          kubectl create deployment numeric --image=numeric-app:local
-          kubectl expose deployment numeric --port=8080 --type=ClusterIP
-
-      - name: Verify pods
+          kind load docker-image numeric-app:local --name xpertgroup-cluster
+        
+      - name: Wait for pod to be ready
+        run: |
+          echo "Waiting for pod to exist..."
+          for i in {1..12}; do
+            PODS=$(kubectl get pods -l app=numeric --no-headers)
+            if [ -n "$PODS" ]; then
+              echo "Pod exists!"
+              break
+            fi
+            sleep 5
+          done
+          echo "Waiting for pod to be ready..."
+          kubectl wait --for=condition=ready pod -l app=numeric --timeout=180s
+      
+      - name: Verify pods and services
         run: |
           kubectl get pods
           kubectl get svc
-
-      - name: Wait for pod to be created
-        run: |
-          for i in {1..12}; do
-            kubectl get pods -l app=numeric && break
-            echo "Waiting for pod to be created..."
-            sleep 5
-          done
-      
-      - name: Wait for pod to be ready
-        run: |
-            kubectl wait --for=condition=ready pod -l app=numeric --timeout=60s  
