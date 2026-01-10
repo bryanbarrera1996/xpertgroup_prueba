@@ -50,5 +50,4 @@ jobs:
       - name: Terraform Plan (LocalStack)
         run: |
           cd terraform
-          terraform plan \
-            -var="aws_endpoint=http://localhost:4566"
+          terraform plan 
