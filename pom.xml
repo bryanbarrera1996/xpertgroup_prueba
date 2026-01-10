@@ -25,6 +25,27 @@
 
 		<!-- SonarCloud -->
 		<sonar.organization>bryanbarrera1996</sonar.organization>
+		 <sonar.exclusions>
+			terraform/**,
+			vars/**,
+			k8s_*.yaml,
+			**/*.sh,
+			**/*.rego,
+			zap_rules/**,
+			slack-emojis/**,
+			setup/**,
+			.github/**,
+			.github/workflows/**
+		</sonar.exclusions>
+
+		<sonar.coverage.exclusions>
+			**/*.sh,
+			**/*.yaml,
+			**/*.rego,
+			terraform/**,
+			.github/**,
+			.github/workflows/**
+		</sonar.coverage.exclusions>
 	</properties>
 
 	<dependencies>
