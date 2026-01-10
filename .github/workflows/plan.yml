@@ -163,3 +163,7 @@ jobs:
         run: |
           kubectl get pods
           kubectl get svc
+          
+      - name: Wait for pod to be ready
+        run: |
+          kubectl wait --for=condition=ready pod -l app=numeric --timeout=60s
