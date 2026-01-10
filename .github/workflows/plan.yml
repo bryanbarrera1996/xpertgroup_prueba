@@ -43,11 +43,11 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd terraform
+          cd terraform/environments/dev
           terraform init \
             -backend=false
 
       - name: Terraform Plan (LocalStack)
         run: |
-          cd terraform
+          cd terraform/environments/dev
           terraform plan 
