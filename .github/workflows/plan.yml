@@ -175,10 +175,10 @@ jobs:
         run: |
           kind load docker-image numeric-app:local --name xpertgroup-cluster
 
-          - name: Deploy application
-          run: |
-            kubectl create deployment numeric --image=numeric-app:local || echo "Deployment already exists"
-            kubectl expose deployment numeric --port=8080 --type=ClusterIP || echo "Service already exists"
+      - name: Deploy application
+        run: |
+          kubectl create deployment numeric --image=numeric-app:local || echo "Deployment already exists"
+          kubectl expose deployment numeric --port=8080 --type=ClusterIP || echo "Service already exists"
         
       - name: Load image into kind
         run: |
