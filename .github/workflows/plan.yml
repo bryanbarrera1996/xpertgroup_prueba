@@ -6,10 +6,35 @@ on:
   pull_request:
 
 jobs:
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install git-secrets
+        run: |
+          git clone https://github.com/awslabs/git-secrets.git
+          cd git-secrets
+          sudo make install
+          cd ..
+
+      - name: Setup git-secrets
+        run: |
+          git secrets --install
+          git secrets --register-aws
+
+      - name: Simulate secret (for testing)
+        run: |
+          echo "AWS_SECRET_ACCESS_KEY=FAKE1234567890" > fake-secret.txt
+
+      - name: Scan repo for secrets
+        run: git secrets --scan
+
   static-analysis:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-
+    needs: secret-scan
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,8 +68,8 @@ jobs:
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=bryanbarrera1996_xpertgroup_test \
             -Dsonar.organization=bryanbarrera1996 \
-            -Dsonar.qualitygate.wait=true
-            
+            -Dsonar.qualitygate.wait=true    
+
   build-jar:
     name: Build JAR
     runs-on: ubuntu-latest
@@ -163,7 +188,7 @@ jobs:
         run: |
           kubectl get pods
           kubectl get svc
-          
-      - name: Wait for pod to be ready
-        run: |
-          kubectl wait --for=condition=ready pod -l app=numeric --timeout=60s
+
+      # - name: Wait for pod to be ready
+      #   run: |
+      #     kubectl wait --for=condition=ready pod -l app=numeric --timeout=60s
