@@ -1,7 +1,15 @@
-FROM adoptopenjdk/openjdk8:alpine-slim
+FROM eclipse-temurin:8-jdk
 EXPOSE 8080
+
 ARG JAR_FILE=target/*.jar
-RUN addgroup -S pipeline && adduser -S k8s-pipeline -G pipeline
+
+# Crear grupo y usuario de sistema
+RUN groupadd --system pipeline \
+ && useradd --system --create-home --gid pipeline k8s-pipeline
 COPY ${JAR_FILE} /home/k8s-pipeline/app.jar
+
+# Cambiar a usuario no root
 USER k8s-pipeline
-ENTRYPOINT ["java","-jar","/home/k8s-pipeline/app.jar"]
+
+# Ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "/home/k8s-pipeline/app.jar"]
