@@ -3,8 +3,8 @@ package com.devsecops;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = NumericController.class)
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false) 
 class NumericControllerTest {
 
@@ -48,8 +48,8 @@ class NumericControllerTest {
     void increment_shouldReturnIncrementedValue() throws Exception {
         Mockito.when(
                 restTemplate.getForEntity(
-                        Mockito.eq("http://node-service:5000/plusone/5"),
-                        Mockito.eq(String.class)
+                        "http://node-service:5000/plusone/5",
+                        String.class
                 )
         ).thenReturn(ResponseEntity.ok("6"));
 
