@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f95db51fdd5c92f3a6f0f4bcb06c1cfb3d28e58a
+        uses: docker/setup-buildx-action@v3
       
 
       - name: Build Docker image
