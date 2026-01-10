@@ -1,4 +1,4 @@
-name: LocalStack Terraform Plan
+name: Deployment Pipeline
 
 on:
   push:
@@ -6,9 +6,38 @@ on:
   pull_request:
 
 jobs:
-  terraform-plan:
+  static-analysis:
+    name: Static Code Analysis (Sonar)
     runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build & run tests (with coverage)
+        run: mvn clean verify
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Sonar Quality Gate (fail if not compliant)
+        uses: SonarSource/sonarcloud-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+  terraform-plan:
+    runs-on: ubuntu-latest
+    needs: static-analysis  
+    if: success()
     services:
       localstack:
         image: localstack/localstack:latest
@@ -17,13 +46,6 @@ jobs:
         env:
           SERVICES: s3,ec2,iam,sts
           DEBUG: 1
-
-    env:
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_ENDPOINT_URL: http://localhost:4566
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
