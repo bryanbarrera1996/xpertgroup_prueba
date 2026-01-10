@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(NumericController.class)
+@WebMvcTest(controllers = NumericController.class)
 class NumericControllerTest {
 
     @Autowired
@@ -46,8 +46,8 @@ class NumericControllerTest {
     void increment_shouldReturnIncrementedValue() throws Exception {
         Mockito.when(
                 restTemplate.getForEntity(
-                        "http://node-service:5000/plusone/5",
-                        String.class
+                        Mockito.eq("http://node-service:5000/plusone/5"),
+                        Mockito.eq(String.class)
                 )
         ).thenReturn(ResponseEntity.ok("6"));
 
