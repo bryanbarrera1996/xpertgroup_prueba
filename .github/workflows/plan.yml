@@ -35,19 +35,15 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build, test & Sonar analysis
+      - name: Build, test & Sonar analysis (with Quality Gate)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn clean verify \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=bryanbarrera1996_xpertgroup_test \
-            -Dsonar.organization=bryanbarrera1996
-
-      - name: SonarCloud Quality Gate
-        uses: sonarsource/sonarcloud-quality-gate-action@v1
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            -Dsonar.organization=bryanbarrera1996 \
+            -Dsonar.qualitygate.wait=true
           
   terraform-plan:
     runs-on: ubuntu-latest
