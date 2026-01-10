@@ -24,10 +24,6 @@ jobs:
           git secrets --install
           git secrets --register-aws
 
-      - name: Simulate secret (for testing)
-        run: |
-          echo "AWS_SECRET_ACCESS_KEY=FAKE1234567890" > fake-secret.txt
-
       - name: Scan repo for secrets
         run: git secrets --scan
 
