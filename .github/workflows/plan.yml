@@ -98,8 +98,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@e5f4d1a9cbb9e6e9c3c3f7f8e1a9b0d2c4e6f7a8
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f95db51fdd5c92f3a6f0f4bcb06c1cfb3d28e58a
+      
 
       - name: Build Docker image
         run: |
