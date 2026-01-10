@@ -46,6 +46,8 @@ jobs:
             -Dsonar.qualitygate.wait=true
           
   terraform-plan:
+    env: 
+      AWS_EC2_METADATA_DISABLED: "true"
     runs-on: ubuntu-latest
     needs: static-analysis  
     if: success()
